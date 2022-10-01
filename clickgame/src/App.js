@@ -1,24 +1,66 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
 
 function App() {
+  const [x, setX] = useState();
+  const [y, setY] = useState();
+  const [axis, setAxis] = useState([]);
+
+  useEffect(
+    () => {
+      const update = (e) => {
+        setX(e.x)
+        setY(e.y)
+      }
+      window.addEventListener('click', update)
+      window.addEventListener('mousemove', update)
+      return () => {
+        window.removeEventListener('click', update)
+        window.removeEventListener('mousemove', update)
+      }
+    },
+    [setX, setY]
+  )
+  
+  const handleClick = (e) => {
+    axis.push({ x: e.clientX, y: e.clientY });
+    hide();
+  };
+
+  const hide = () => {
+    setTimeout(() => {
+      axis.splice(0, 1);
+    }, 4000);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <>
+      <div onClick={handleClick}>
+        <div
+          className="App"
+          style={{
+            backgroundColor: "#282c34",
+            color: "White",
+            fontSize: "40px",
+            border: "1px dotted white",
+          }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          Click Game 😜
+        </div>
+        <header className="App-header">
+          <>
+            {axis.map((list) => {
+              return (
+                <div
+                  style={{ position: "absolute", top: list.y, left: list.x }}
+                >
+                  😜
+                </div>
+              );
+            })}
+          </>
+        </header>
+      </div>
+    </>
   );
 }
 
